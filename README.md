@@ -1,5 +1,7 @@
 # Man Hours
 
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
+
 I want to have a badge that shows an estimate of how many man hours I've spent on a project.
 
 Something like this: ![Man Hours](https://img.shields.io/badge/Man%20Hours-777-yellow)
