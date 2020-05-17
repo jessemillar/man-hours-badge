@@ -40,6 +40,13 @@ async fn man_hours(req: Request<Body>) -> Result<Response<Body>, hyper::Error> {
                     .output()
                     .expect("Failed to clone repo");
 
+            let git_log_string = String::from_utf8_lossy(&git_log.stdout);
+            let mut git_log_iterator = git_log_string.lines();
+
+            while let Some(line) = git_log_iterator.next() {
+                println!("{}", line);
+            }
+
             Ok(Response::new(Body::from(git_log.stdout)))
         }
 
