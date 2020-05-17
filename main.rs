@@ -31,12 +31,11 @@ async fn man_hours(req: Request<Body>) -> Result<Response<Body>, hyper::Error> {
                     .unwrap());
             };
             println!("{}", name);
-            // TODO Clone the repo
             Command::new("sh")
                     .arg("-c")
-                    .arg("echo hello")
+                    .arg(["git clone", name, "--no-checkout", "repository"].join(" "))
                     .spawn()
-                    .expect("process failed to execute");
+                    .expect("Failed to clone repo");
             Ok(Response::new(Body::from("Hello, there")))
         }
 
