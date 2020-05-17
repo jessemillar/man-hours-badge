@@ -51,6 +51,7 @@ async fn man_hours(req: Request<Body>) -> Result<Response<Body>, hyper::Error> {
             while let Some(line) = git_log_iterator.next() {
                 // Parse out timestamps
                 if re.is_match(line) {
+                    let line = line.replace("Date:   ", "");
                     println!("{}", line);
                 }
             }
