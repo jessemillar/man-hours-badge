@@ -2,4 +2,5 @@
 
 git clone "$REPO" repository --no-checkout
 cd repository || return
-../man-hours "$(git log | grep Date)"
+git log | grep 'Date'
+../man-hours "$(git log | grep 'Date')"
