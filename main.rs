@@ -5,6 +5,7 @@ use std::process::Command;
 use hyper::service::{make_service_fn, service_fn};
 use hyper::{Body, Method, Request, Response, Server, StatusCode};
 use std::collections::HashMap;
+use regex::Regex;
 
 /// This is our service handler. It receives a Request, routes on its path, and returns a Future of a Response.
 async fn man_hours(req: Request<Body>) -> Result<Response<Body>, hyper::Error> {
@@ -43,8 +44,15 @@ async fn man_hours(req: Request<Body>) -> Result<Response<Body>, hyper::Error> {
             let git_log_string = String::from_utf8_lossy(&git_log.stdout);
             let mut git_log_iterator = git_log_string.lines();
 
+            // let mut total_man_hours = 0;
+
+            let re = Regex::new(r"^Date:\s+\w+\s\w+\s\d+\s\d+:\d+:\d+\s\d+\s.\d+$").unwrap();
+
             while let Some(line) = git_log_iterator.next() {
-                println!("{}", line);
+                // Parse out timestamps
+                if re.is_match(line) {
+                    println!("{}", line);
+                }
             }
 
             Ok(Response::new(Body::from(git_log.stdout)))
