@@ -10,6 +10,7 @@ edition = "2018"
 hyper = "0.13"
 tokio = { version = "0.2", features = ["full"] }
 futures = "0.3"
+url = "1.0"
 
 [[bin]]
 name = "man-hours"

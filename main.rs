@@ -3,6 +3,8 @@
 use std::process::Command;
 use hyper::service::{make_service_fn, service_fn};
 use hyper::{Body, Method, Request, Response, Server, StatusCode};
+// use url::form_urlencoded;
+use std::collections::HashMap;
 
 /// This is our service handler. It receives a Request, routes on its path, and returns a Future of a Response.
 async fn man_hours(req: Request<Body>) -> Result<Response<Body>, hyper::Error> {
@@ -14,13 +16,28 @@ async fn man_hours(req: Request<Body>) -> Result<Response<Body>, hyper::Error> {
 
         // Calculate man hours from a repo
         (&Method::GET, "/hours") => {
+            let query = req.uri().query();
+
+            let params: HashMap<_, _> = url::form_urlencoded::parse(query.unwrap().as_bytes()).into_owned().collect();
+
+            // Validate the request parameters, returning
+            // early if an invalid input is detected.
+            let name = if let Some(n) = params.get("repo") {
+                n
+            } else {
+                return Ok(Response::builder()
+                    .status(StatusCode::UNPROCESSABLE_ENTITY)
+                    .body("error".into())
+                    .unwrap());
+            };
+            println!("{}", name);
             // TODO Clone the repo
             Command::new("sh")
                     .arg("-c")
                     .arg("echo hello")
                     .spawn()
                     .expect("process failed to execute");
-            Ok(Response::new(Body::from("Hello World!")))
+            Ok(Response::new(Body::from("Hello, there")))
         }
 
         // Return the 404 Not Found for other routes.
