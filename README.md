@@ -15,3 +15,5 @@ Running `git clone <repo> --no-checkout` pulls git history but no files (which s
 Docker container is built and accessible here: https://hub.docker.com/repository/docker/jessemillar/man-hours
 
 I need a way of only calculating hours for approved repos (maybe have an env var that's a GitHub username and only clone if it matches)
+
+Inspired by [this project](https://github.com/kimmobrunfeldt/git-hours/blob/8aaeee237cb9d9028e7a2592a25ad8468b1f45e4/index.js#L114-L143) but I hate Node and refuse to use it
