@@ -1,35 +1,44 @@
 #![deny(warnings)]
 
-use std::convert::Infallible;
 use std::process::Command;
 use hyper::service::{make_service_fn, service_fn};
-use hyper::{Body, Request, Response, Server};
+use hyper::{Body, Method, Request, Response, Server, StatusCode};
 
-async fn hello(_: Request<Body>) -> Result<Response<Body>, Infallible> {
-    Command::new("sh")
-            .arg("-c")
-            .arg("echo hello")
-            .spawn()
-            .expect("process failed to execute");
-    Ok(Response::new(Body::from("Hello World!")))
+/// This is our service handler. It receives a Request, routes on its path, and returns a Future of a Response.
+async fn man_hours(req: Request<Body>) -> Result<Response<Body>, hyper::Error> {
+    match (req.method(), req.uri().path()) {
+        // Serve some instructions at /
+        (&Method::GET, "/") => Ok(Response::new(Body::from(
+            "Try POSTing data to /echo such as: `curl localhost:3000/echo -XPOST -d 'hello world'`",
+        ))),
+
+        // Calculate man hours from a repo
+        (&Method::GET, "/hours") => {
+            // TODO Clone the repo
+            Command::new("sh")
+                    .arg("-c")
+                    .arg("echo hello")
+                    .spawn()
+                    .expect("process failed to execute");
+            Ok(Response::new(Body::from("Hello World!")))
+        }
+
+        // Return the 404 Not Found for other routes.
+        _ => {
+            let mut not_found = Response::default();
+            *not_found.status_mut() = StatusCode::NOT_FOUND;
+            Ok(not_found)
+        }
+    }
 }
 
 #[tokio::main]
-pub async fn main() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
-    pretty_env_logger::init();
-
-    // For every connection, we must make a `Service` to handle all
-    // incoming HTTP requests on said connection.
-    let make_svc = make_service_fn(|_conn| {
-        // This is the `Service` that will handle the connection.
-        // `service_fn` is a helper to convert a function that
-        // returns a Response into a `Service`.
-        async { Ok::<_, Infallible>(service_fn(hello)) }
-    });
-
+async fn main() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
     let addr = ([0, 0, 0, 0], 8080).into();
 
-    let server = Server::bind(&addr).serve(make_svc);
+    let service = make_service_fn(|_| async { Ok::<_, hyper::Error>(service_fn(man_hours)) });
+
+    let server = Server::bind(&addr).serve(service);
 
     println!("Listening on http://{}", addr);
 
@@ -37,4 +46,3 @@ pub async fn main() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
 
     Ok(())
 }
-
