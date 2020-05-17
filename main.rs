@@ -17,7 +17,6 @@ async fn man_hours(req: Request<Body>) -> Result<Response<Body>, hyper::Error> {
         // Calculate man hours from a repo
         (&Method::GET, "/hours") => {
             let query = req.uri().query();
-
             let params: HashMap<_, _> = url::form_urlencoded::parse(query.unwrap().as_bytes()).into_owned().collect();
 
             // Validate the request parameters, returning early if an invalid input is detected.
@@ -35,16 +34,11 @@ async fn man_hours(req: Request<Body>) -> Result<Response<Body>, hyper::Error> {
             let repo_dir = &since_the_epoch.subsec_nanos().to_string();
 
             // Clone the repo
-            Command::new("sh")
+            let git_log = Command::new("sh")
                     .arg("-c")
-                    .arg(["git clone", name, "--no-checkout", repo_dir].join(" "))
-                    .spawn()
-                    .expect("Failed to clone repo");
-
-            let git_log = Command::new("git log")
-                    .current_dir(repo_dir)
+                    .arg(["git clone", name, "--no-checkout", repo_dir, "&& cd", repo_dir, "&& git log"].join(" "))
                     .output()
-                    .expect("git log command failed to start");
+                    .expect("Failed to clone repo");
 
             Ok(Response::new(Body::from(git_log.stdout)))
         }
