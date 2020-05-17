@@ -1,11 +1,16 @@
 #![deny(warnings)]
 
 use std::convert::Infallible;
-
+use std::process::Command;
 use hyper::service::{make_service_fn, service_fn};
 use hyper::{Body, Request, Response, Server};
 
 async fn hello(_: Request<Body>) -> Result<Response<Body>, Infallible> {
+    Command::new("sh")
+            .arg("-c")
+            .arg("echo hello")
+            .spawn()
+            .expect("process failed to execute");
     Ok(Response::new(Body::from("Hello World!")))
 }
 
@@ -22,7 +27,7 @@ pub async fn main() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
         async { Ok::<_, Infallible>(service_fn(hello)) }
     });
 
-    let addr = ([127, 0, 0, 1], 3000).into();
+    let addr = ([0, 0, 0, 0], 8080).into();
 
     let server = Server::bind(&addr).serve(make_svc);
 
