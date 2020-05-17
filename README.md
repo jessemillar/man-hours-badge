@@ -13,3 +13,5 @@ If I'm running on Heroku, I'll definitely need to enable HTTP caching (probably 
 Running `git clone <repo> --no-checkout` pulls git history but no files (which should be faster)
 
 Docker container is built and accessible here: https://hub.docker.com/repository/docker/jessemillar/man-hours
+
+I need a way of only calculating hours for approved repos (maybe have an env var that's a GitHub username and only clone if it matches)
