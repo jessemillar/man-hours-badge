@@ -27,6 +27,8 @@ The algorithm is very simple and focuses on getting a decent estimation instead 
 	- If the difference is > 8 hours, add 1 hour to the total man hours (to account for design/ramp up time not represented by commit history)
 1. Report back the total number of hours
 
+The algorithm only looks at the `master` branch and assumes a healthy, regular commit cadence.
+
 ### Heroku
 
 You can easily deploy Man Hours to your own Heroku account if you'd like. You'll need to add a "Heroku Redis" add-on to your application post-deploy.

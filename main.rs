@@ -86,12 +86,12 @@ async fn man_hours(req: Request<Body>, redis_client: redis::Client) -> Result<Re
                         let dt = DateTime::parse_from_str(&line, "%a %b %d %H:%M:%S%.3f %Y %z");
                         let time_difference = previous_dt.unwrap()-dt.unwrap();
                         // println!("DIFFERENCE IN MINUTES {}", time_difference.num_minutes());
-                        if time_difference > chrono::Duration::minutes(0) && time_difference < chrono::Duration::hours(10) {
+                        if time_difference > chrono::Duration::minutes(0) && time_difference < chrono::Duration::hours(8) {
                             // println!("Currently developing");
                             total_man_hours = total_man_hours + time_difference;
                         } else {
                             // println!("Starting a dev session");
-                            total_man_hours = total_man_hours + chrono::Duration::minutes(30);
+                            total_man_hours = total_man_hours + chrono::Duration::hours(1);
                         }
                         previous_dt = dt;
                         // println!("{}", line);
