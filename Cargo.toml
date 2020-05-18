@@ -13,6 +13,7 @@ futures = "0.3"
 url = "1.0"
 regex = "1"
 chrono = "0.4"
+redis = "0.16.0"
 
 [[bin]]
 name = "man-hours"
