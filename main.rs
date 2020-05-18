@@ -19,7 +19,7 @@ async fn man_hours(req: Request<Body>, redis_client: redis::Client) -> Result<Re
     match (req.method(), req.uri().path()) {
         // Serve some instructions at /
         (&Method::GET, "/") => Ok(Response::new(Body::from(
-            "Try POSTing data to /echo such as: `curl localhost:3000/echo -XPOST -d 'hello world'`",
+            "Use the /health endpoint and pass ?repo= with an HTTP link for cloning your repo",
         ))),
 
         // Calculate man hours from a repo
@@ -31,13 +31,19 @@ async fn man_hours(req: Request<Body>, redis_client: redis::Client) -> Result<Re
             let name = if let Some(n) = params.get("repo") {
                 n
             } else {
-                return Ok(Response::builder()
+                let json_response = "{
+                    \"schemaVersion\": 1,
+                    \"label\": \"man hours\",
+                    \"message\": \"error\",
+                    \"color\": \"critical\"
+                }";
+
+                let response = Response::builder()
                     .status(StatusCode::UNPROCESSABLE_ENTITY)
-                    // TODO Pass an error back in a JSON struct that generates an error badge
-                    .body("error".into())
-                    .unwrap());
+                    .header(header::CONTENT_TYPE, "application/json")
+                    .body(Body::from(json_response));
+                return Ok(response.unwrap())
             };
-            // println!("{}", name);
 
             let mut redis_connection = redis_client.get_connection().expect("Error creating Redis connection");
             let redis_response: Option<i32> = redis_connection.get(name).expect("Error reading from Redis");
