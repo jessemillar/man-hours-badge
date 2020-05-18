@@ -17,7 +17,7 @@ extern crate redis;
 type GenericError = Box<dyn std::error::Error + Send + Sync>;
 
 fn calculate(redis_client: redis::Client, repo_name: String) {
-    println!("Beginning calculation");
+    println!("Beginning calculation of {}", repo_name);
 
     // Calculate the man hours
     let since_the_epoch = SystemTime::now().duration_since(UNIX_EPOCH).expect("Time went backwards");
@@ -59,14 +59,14 @@ fn calculate(redis_client: redis::Client, repo_name: String) {
         }
     }
 
+    println!("Finished calculation of {}", repo_name);
+
     // Make value_to_cache contain the hour count and the current time for calculating when the data is stale
     let ttl = since_the_epoch + Duration::from_secs(60*60*24);
     let value_to_cache = [total_man_hours.num_hours().to_string(), ttl.as_secs().to_string()].join(" ");
-    println!("Attempting to cache: {}", value_to_cache);
+    println!("Attempting to cache: {} {}", repo_name, value_to_cache);
     let mut redis_connection = redis_client.get_connection().expect("Error creating Redis connection");
     let _ : () = redis_connection.set(repo_name, value_to_cache).expect("Error writing to Redis");
-
-    println!("Finished calculation");
 }
 
 /// This is our service handler. It receives a Request, routes on its path, and returns a Future of a Response.
@@ -118,7 +118,7 @@ async fn man_hours(req: Request<Body>, redis_client: redis::Client) -> Result<Re
             // Unwrap the value so the borrower doesn't complain
             let repo_name_string = repo_name.unwrap().to_string();
 
-            println!("Comparing times {} to {}", cached_man_hours_timestamp, time_since_epoch);
+            // println!("Comparing times {} to {}", cached_man_hours_timestamp, time_since_epoch);
 
             // TODO Recalculate on missing or stale cache data
             if cached_man_hours == "calculating" || cached_man_hours_timestamp < time_since_epoch {
