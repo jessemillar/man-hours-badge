@@ -7,6 +7,7 @@ use hyper::{Body, Method, Request, Response, Server, StatusCode};
 use std::collections::HashMap;
 use regex::Regex;
 use chrono::DateTime;
+use std::env;
 
 /// This is our service handler. It receives a Request, routes on its path, and returns a Future of a Response.
 async fn man_hours(req: Request<Body>) -> Result<Response<Body>, hyper::Error> {
@@ -85,7 +86,7 @@ async fn man_hours(req: Request<Body>) -> Result<Response<Body>, hyper::Error> {
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
-    let addr = ([0, 0, 0, 0], 8080).into();
+    let addr = ([0, 0, 0, 0], env::var("PORT").unwrap().parse().unwrap()).into();
     let service = make_service_fn(|_| async { Ok::<_, hyper::Error>(service_fn(man_hours)) });
     let server = Server::bind(&addr).serve(service);
 
