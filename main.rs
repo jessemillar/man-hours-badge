@@ -30,10 +30,10 @@ async fn man_hours(req: Request<Body>) -> Result<Response<Body>, hyper::Error> {
                     .body("error".into())
                     .unwrap());
             };
-            println!("{}", name);
+            // println!("{}", name);
 
             let since_the_epoch = SystemTime::now().duration_since(UNIX_EPOCH).expect("Time went backwards");
-            let repo_dir = &since_the_epoch.subsec_nanos().to_string();
+            let repo_dir = &since_the_epoch.as_nanos().to_string();
 
             // Clone the repo
             let git_log = Command::new("sh")
@@ -45,7 +45,7 @@ async fn man_hours(req: Request<Body>) -> Result<Response<Body>, hyper::Error> {
             let git_log_string = String::from_utf8_lossy(&git_log.stdout);
             let mut git_log_iterator = git_log_string.lines();
 
-            let mut total_man_minutes: i64 = 0;
+            let mut total_man_hours = chrono::Duration::hours(0);
 
             let re = Regex::new(r"^Date:\s+\w+\s\w+\s\d+\s\d+:\d+:\d+\s\d+\s.\d+$").unwrap();
             let mut previous_dt = DateTime::parse_from_str("Thu Jan 1 00:00:00 1970 +0000", "%a %b %d %H:%M:%S%.3f %Y %z");
@@ -57,22 +57,21 @@ async fn man_hours(req: Request<Body>) -> Result<Response<Body>, hyper::Error> {
                     let line = line.replace("Date:   ", "");
                     let dt = DateTime::parse_from_str(&line, "%a %b %d %H:%M:%S%.3f %Y %z");
                     let time_difference = previous_dt.unwrap()-dt.unwrap();
-                    println!("MATH {}", 5+5);
-                    println!("DIFFERENCE IN MINUTES {}", time_difference.num_minutes());
-                    if time_difference > chrono::Duration::minutes(0) && time_difference < chrono::Duration::hours(3) {
-                        println!("Currently developing");
-                        total_man_minutes += time_difference.num_minutes();
+                    // println!("DIFFERENCE IN MINUTES {}", time_difference.num_minutes());
+                    if time_difference > chrono::Duration::minutes(0) && time_difference < chrono::Duration::hours(10) {
+                        // println!("Currently developing");
+                        total_man_hours = total_man_hours + time_difference;
                     } else {
-                        println!("Starting a dev session");
-                        total_man_minutes += 30;
+                        // println!("Starting a dev session");
+                        total_man_hours = total_man_hours + chrono::Duration::minutes(30);
                     }
                     previous_dt = dt;
-                    println!("{}", line);
-                    println!("CURRENT TOTAL IN MINUTES {}", total_man_minutes);
+                    // println!("{}", line);
+                    // println!("CURRENT TOTAL IN HOURS {}", total_man_hours.num_hours());
                 }
             }
 
-            Ok(Response::new(Body::from(total_man_minutes.to_string())))
+            Ok(Response::new(Body::from(total_man_hours.num_hours().to_string())))
         }
 
         // Return 404 otherwise
