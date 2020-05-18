@@ -3,7 +3,7 @@
 use std::time::{SystemTime, UNIX_EPOCH};
 use std::process::Command;
 use hyper::service::{make_service_fn, service_fn};
-use hyper::{Body, Method, Request, Response, Server, StatusCode};
+use hyper::{header, Body, Method, Request, Response, Server, StatusCode};
 use std::collections::HashMap;
 use regex::Regex;
 use chrono::DateTime;
@@ -72,7 +72,18 @@ async fn man_hours(req: Request<Body>) -> Result<Response<Body>, hyper::Error> {
                 }
             }
 
-            Ok(Response::new(Body::from(total_man_hours.num_hours().to_string())))
+            let json_response = ["{
+                \"schemaVersion\": 1,
+                \"label\": \"Man Hours\",
+                \"message\": \"", &total_man_hours.num_hours().to_string(), "\",
+                \"color\": \"yellow\"
+            }"].join("");
+
+            let response = Response::builder()
+                .status(StatusCode::OK)
+                .header(header::CONTENT_TYPE, "application/json")
+                .body(Body::from(json_response));
+            Ok(response.unwrap())
         }
 
         // Return 404 otherwise
