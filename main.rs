@@ -74,9 +74,9 @@ async fn man_hours(req: Request<Body>) -> Result<Response<Body>, hyper::Error> {
 
             let json_response = ["{
                 \"schemaVersion\": 1,
-                \"label\": \"Man Hours\",
+                \"label\": \"man hours\",
                 \"message\": \"", &total_man_hours.num_hours().to_string(), "\",
-                \"color\": \"yellow\"
+                \"color\": \"blueviolet\"
             }"].join("");
 
             // \"cacheSeconds\": 86400,
