@@ -79,6 +79,8 @@ async fn man_hours(req: Request<Body>) -> Result<Response<Body>, hyper::Error> {
                 \"color\": \"yellow\"
             }"].join("");
 
+            // \"cacheSeconds\": 86400,
+
             let response = Response::builder()
                 .status(StatusCode::OK)
                 .header(header::CONTENT_TYPE, "application/json")
