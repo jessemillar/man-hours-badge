@@ -12,6 +12,7 @@ tokio = { version = "0.2", features = ["full"] }
 futures = "0.3"
 url = "1.0"
 regex = "1"
+chrono = "0.4"
 
 [[bin]]
 name = "man-hours"

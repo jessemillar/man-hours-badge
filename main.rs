@@ -6,6 +6,7 @@ use hyper::service::{make_service_fn, service_fn};
 use hyper::{Body, Method, Request, Response, Server, StatusCode};
 use std::collections::HashMap;
 use regex::Regex;
+use chrono::DateTime;
 
 /// This is our service handler. It receives a Request, routes on its path, and returns a Future of a Response.
 async fn man_hours(req: Request<Body>) -> Result<Response<Body>, hyper::Error> {
@@ -44,19 +45,26 @@ async fn man_hours(req: Request<Body>) -> Result<Response<Body>, hyper::Error> {
             let git_log_string = String::from_utf8_lossy(&git_log.stdout);
             let mut git_log_iterator = git_log_string.lines();
 
-            // let mut total_man_hours = 0;
+            let mut total_man_hours_in_seconds = chrono::Duration::seconds(0);
 
             let re = Regex::new(r"^Date:\s+\w+\s\w+\s\d+\s\d+:\d+:\d+\s\d+\s.\d+$").unwrap();
+            let mut previous_dt = DateTime::parse_from_str("Thu Jan 1 00:00:00 1970 +0000", "%a %b %d %H:%M:%S%.3f %Y %z");
+            // Tue May 5 18:14:45 2015 -0600
 
             while let Some(line) = git_log_iterator.next() {
                 // Parse out timestamps
                 if re.is_match(line) {
                     let line = line.replace("Date:   ", "");
+                    let dt = DateTime::parse_from_str(&line, "%a %b %d %H:%M:%S%.3f %Y %z");
+                    let time_difference = dt.unwrap()-previous_dt.unwrap();
+                    println!("DIFFERENCE {}", time_difference);
+                    total_man_hours_in_seconds = total_man_hours_in_seconds + time_difference;
+                    previous_dt = dt;
                     println!("{}", line);
                 }
             }
 
-            Ok(Response::new(Body::from(git_log.stdout)))
+            Ok(Response::new(Body::from(total_man_hours_in_seconds.num_hours().to_string())))
         }
 
         // Return 404 otherwise
