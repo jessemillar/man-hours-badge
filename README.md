@@ -41,6 +41,13 @@ A Docker container housing the `man-hours` binary is continually built and acces
 
 ## FAQ
 
+### Why does my badge say "error"?
+
+That means one of two things:
+
+1. The repository URI you passed to the [Man Hours Badge Generator](https://jessemillar.com/r/man-hours/generator) was malformed. Try generating it again.
+1. The backend service encountered an issue while cloning/parsing your project that will likely resolve automatically. If it doesn't after a few hours, feel free to [file an issue](https://github.com/jessemillar/man-hours/issues).
+
 ### Why does my badge say "calculating"?
 
 Larger repositories take a while to `git clone` even with the `--bare` argument. If you see "calculating" in place of a number on your badge, that means the backend service wasn't able to clone and parse your repo within 5 seconds. Don't worry, it's likely done calculating your man hour total. The [shields.io](https://shields.io/endpoint) has a mandatory cache time of 300 seconds so you'll have to wait that long and then refresh to see your correct total displayed on your badge.
