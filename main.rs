@@ -33,12 +33,12 @@ async fn man_hours(req: Request<Body>) -> Result<Response<Body>, hyper::Error> {
             // println!("{}", name);
 
             let since_the_epoch = SystemTime::now().duration_since(UNIX_EPOCH).expect("Time went backwards");
-            let repo_dir = &since_the_epoch.as_nanos().to_string();
+            let repo_dir = ["repositories", &since_the_epoch.as_nanos().to_string()].join("/");
 
             // Clone the repo
             let git_log = Command::new("sh")
                     .arg("-c")
-                    .arg(["git clone", name, "--no-checkout", repo_dir, "&& cd", repo_dir, "&& git log"].join(" "))
+                    .arg(["git clone", name, "--no-checkout", &repo_dir, "&& cd", &repo_dir, "&& git log"].join(" "))
                     .output()
                     .expect("Failed to clone repo");
 

@@ -5,7 +5,6 @@ RUN cargo install --path .
 
 FROM archlinux/base:latest
 # Install dependencies
-RUN pacman -Syy && yes | pacman -S git grep
-COPY --from=builder /usr/src/man-hours/compute.sh /compute.sh
+RUN pacman -Syy && yes | pacman -S git
 COPY --from=builder /usr/local/cargo/bin/man-hours /man-hours
-CMD "/compute.sh"
+CMD "/man-hours"
