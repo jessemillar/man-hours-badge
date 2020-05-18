@@ -1,6 +1,6 @@
-# Man Hours
+# Man Hours Badge
 
-[![Man Hours](https://img.shields.io/endpoint?url=https%3A%2F%2Fmh.jessemillar.com%2Fhours%3Frepo%3Dhttps%3A%2F%2Fgithub.com%2Fjessemillar%2Fman-hours.git)](https://jessemillar.com/r/man-hours)
+[![Man Hours](https://img.shields.io/endpoint?url=https%3A%2F%2Fmh.jessemillar.com%2Fhours%3Frepo%3Dhttps%3A%2F%2Fgithub.com%2Fjessemillar%2Fman-hours-badge.git)](https://jessemillar.com/r/man-hours)
 
 ## Overview
 
@@ -10,8 +10,8 @@ All the server-side code is written in Rust because that's the new hotness (righ
 
 ## Usage
 
-1. Navigate to the [Man Hours Badge Generator](https://jessemillar.com/r/man-hours/generator)
-1. Paste in the URI you'd use to clone your repository via HTTPS (e.g. `https://github.com/jessemillar/man-hours.git`)
+1. Navigate to the [Man Hours Badge Generator](https://jessemillar.com/r/man-hours-badge/generator)
+1. Paste in the URI you'd use to clone your repository via HTTPS (e.g. `https://github.com/jessemillar/man-hours-badge.git`)
 1. Copy the generated Markdown and paste it into your README
 
 ## Notes
@@ -45,8 +45,8 @@ A Docker container housing the `man-hours` binary is continually built and acces
 
 That means one of two things:
 
-1. The repository URI you passed to the [Man Hours Badge Generator](https://jessemillar.com/r/man-hours/generator) was malformed. Try generating it again.
-1. The backend service encountered an issue while cloning/parsing your project that will likely resolve automatically. If it doesn't after a few hours, feel free to [file an issue](https://github.com/jessemillar/man-hours/issues).
+1. The repository URI you passed to the [Man Hours Badge Generator](https://jessemillar.com/r/man-hours-badge/generator) was malformed. Try generating it again.
+1. The backend service encountered an issue while cloning/parsing your project that will likely resolve automatically. If it doesn't after a few hours, feel free to [file an issue](https://github.com/jessemillar/man-hours-badge/issues).
 
 ### Why does my badge say "calculating"?
 
