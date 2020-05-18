@@ -1,10 +1,12 @@
 # Man Hours
 
-![Man Hours](https://img.shields.io/endpoint?url=https%3A%2F%2Fjessemillar-man-hours.herokuapp.com%2Fhours%3Frepo%3Dhttps%3A%2F%2Fgithub.com%2Fjessemillar%2Fman-hours.git)
+[![Man Hours](https://img.shields.io/endpoint?url=https%3A%2F%2Fmh.jessemillar.com%2Fhours%3Frepo%3Dhttps%3A%2F%2Fgithub.com%2Fjessemillar%2Fman-hours.git)](https://jessemillar.com/r/man-hours)
 
 ## Overview
 
-I want to have a badge that shows an estimate of how many man hours I've spent on a project. I'd like it to be as easy as adding the badge image to the README file and that's all the setup. I want to write any server-side code in Rust.
+When skimming a new code project, I'm always curious how much time went into creating it. I built Man Hours to generate and display [a shields.io badge](https://shields.io) for your README with an estimate of how many hours committers have spent working on the code. You can see a sample badge above with the total hours put into this repo.
+
+All the server-side code is written in Rust.
 
 ## Usage
 
@@ -16,7 +18,7 @@ I want to have a badge that shows an estimate of how many man hours I've spent o
 
 ### Algorithm
 
-The algorithm is very simple and focuses on getting a decent estimation instead of a fully accurate metric. It basically goes like this:
+The algorithm is very simple and focuses on getting a decent estimation instead of a fully accurate metric. It was inspired by [the `git-hours` project](https://github.com/kimmobrunfeldt/git-hours) and basically goes like this:
 
 1. Run `git log`
 1. Extract timestamps from the `git log` output
@@ -34,10 +36,6 @@ You can easily deploy Man Hours to your own Heroku account if you'd like. You'll
 ### Docker Hub
 
 A Docker container housing the `man-hours` binary is continually built and accessible on [Docker Hub](https://hub.docker.com/repository/docker/jessemillar/man-hours).
-
-### Miscellaneous
-
-- My algorithm was inspired by [the `git-hours` project](https://github.com/kimmobrunfeldt/git-hours/blob/8aaeee237cb9d9028e7a2592a25ad8468b1f45e4/index.js#L114-L143).
 
 ## FAQ
 
