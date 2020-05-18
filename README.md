@@ -4,9 +4,9 @@
 
 ## Overview
 
-When skimming a new code project, I'm always curious how much time went into creating it. I built Man Hours to generate and display [a shields.io badge](https://shields.io) for your README with an estimate of how many hours committers have spent working on the code. You can see a sample badge above with the total hours put into this repo.
+When skimming a new repository, I'm always curious how much time went into creating it. I built Man Hours to generate and display [a shields.io badge](https://shields.io) for your README with an estimate of how many hours committers have spent working on your files. You can see a sample badge above with the total hours put into this repo.
 
-All the server-side code is written in Rust.
+All the server-side code is written in Rust because that's the new hotness (rightly so from what I've seen).
 
 ## Usage
 
