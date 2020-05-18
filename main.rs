@@ -8,6 +8,7 @@ use std::collections::HashMap;
 use regex::Regex;
 use chrono::DateTime;
 use std::env;
+use std::time::Duration;
 use redis::Commands;
 use std::thread;
 
@@ -20,12 +21,12 @@ fn calculate(redis_client: redis::Client, repo_name: String) {
 
     // Calculate the man hours
     let since_the_epoch = SystemTime::now().duration_since(UNIX_EPOCH).expect("Time went backwards");
-    let repo_dir = ["repositories", &since_the_epoch.as_nanos().to_string()].join("/");
+    let nanos_since_epoch_dir = ["repositories", &since_the_epoch.as_nanos().to_string()].join("/");
 
     // Clone the repo
     let git_log = Command::new("sh")
             .arg("-c")
-            .arg(["git clone --bare", &repo_name, &repo_dir, "&& cd", &repo_dir, "&& git log"].join(" "))
+            .arg(["git clone --bare", &repo_name, &nanos_since_epoch_dir, "&& cd", &nanos_since_epoch_dir, "&& git log"].join(" "))
             .output()
             .expect("Failed to clone repo");
 
@@ -58,8 +59,12 @@ fn calculate(redis_client: redis::Client, repo_name: String) {
         }
     }
 
+    // Make value_to_cache contain the hour count and the current time for calculating when the data is stale
+    let ttl = since_the_epoch + Duration::from_secs(60*60*24);
+    let value_to_cache = [total_man_hours.num_hours().to_string(), ttl.as_secs().to_string()].join(" ");
+    println!("Attempting to cache: {}", value_to_cache);
     let mut redis_connection = redis_client.get_connection().expect("Error creating Redis connection");
-    let _ : () = redis_connection.set(repo_name, total_man_hours.num_hours()).expect("Error writing to Redis");
+    let _ : () = redis_connection.set(repo_name, value_to_cache).expect("Error writing to Redis");
 
     println!("Finished calculation");
 }
@@ -96,13 +101,27 @@ async fn man_hours(req: Request<Body>, redis_client: redis::Client) -> Result<Re
 
             let mut redis_connection = redis_client.get_connection().expect("Error creating Redis connection");
             let redis_response: Option<String> = redis_connection.get(repo_name.unwrap().to_string()).expect("Error reading from Redis");
-            let cached_man_hours = redis_response.unwrap_or_else(|| "calculating".to_string());
-            println!("Cached hours: {}", cached_man_hours);
+            let cached_value = redis_response.unwrap_or_else(|| "calculating".to_string());
 
+            let mut cached_man_hours = "calculating";
+            let mut cached_man_hours_timestamp = 0;
+            let mut time_since_epoch = 0;
+
+            if cached_value != "calculating" {
+                let mut split_cached_value = cached_value.split_whitespace();
+                cached_man_hours = split_cached_value.next().unwrap();
+                cached_man_hours_timestamp = split_cached_value.next().unwrap().parse::<u64>().unwrap();
+                let since_the_epoch = SystemTime::now().duration_since(UNIX_EPOCH).expect("Time went backwards");
+                time_since_epoch = since_the_epoch.as_secs();
+            }
+
+            // Unwrap the value so the borrower doesn't complain
             let repo_name_string = repo_name.unwrap().to_string();
 
+            println!("Comparing times {} to {}", cached_man_hours_timestamp, time_since_epoch);
+
             // TODO Recalculate on missing or stale cache data
-            if cached_man_hours == "calculating" {
+            if cached_man_hours == "calculating" || cached_man_hours_timestamp < time_since_epoch {
                 thread::spawn(move || {
                     calculate(redis_client, repo_name_string);
                 });
@@ -112,7 +131,7 @@ async fn man_hours(req: Request<Body>, redis_client: redis::Client) -> Result<Re
             let json_response = ["{
                 \"schemaVersion\": 1,
                 \"label\": \"man hours\",
-                \"message\": \"", &cached_man_hours, "\",
+                \"message\": \"", cached_man_hours, "\",
                 \"color\": \"blueviolet\"
             }"].join("");
 
