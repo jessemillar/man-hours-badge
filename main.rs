@@ -33,11 +33,11 @@ async fn man_hours(req: Request<Body>, redis_client: redis::Client) -> Result<Re
             } else {
                 return Ok(Response::builder()
                     .status(StatusCode::UNPROCESSABLE_ENTITY)
+                    // TODO Pass an error back in a JSON struct that generates an error badge
                     .body("error".into())
                     .unwrap());
             };
             // println!("{}", name);
-
 
             let mut redis_connection = redis_client.get_connection().expect("Error creating Redis connection");
             let redis_response: Option<i32> = redis_connection.get(name).expect("Error reading from Redis");
