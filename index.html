@@ -1,0 +1,23 @@
+<!DOCTYPE HTML>
+
+<meta charset="UTF-8">
+
+<title>Generate a Man Hours Badge</title>
+
+<body>
+
+<form action="javascript:void(-1)" method="GET">
+	Enter the repo clone URI in the box: <br>
+	<input type="text" id="repo" value=""><br>
+	<input type="button" name="button" value="Generate Markdown" onClick="generateMarkdown()">
+</form>
+
+<textarea id="markdown" rows="4" cols="50"></textarea>
+
+<script>
+	function generateMarkdown(form) {
+		console.log(form);
+		document.getElementById("markdown").value = "[![Man Hours](https://img.shields.io/endpoint?url=" + encodeURIComponent("https://mh.jessemillar.com/hours?repo=") + encodeURIComponent(document.getElementById("repo").value) + ")](https://jessemillar.com/r/man-hours)";
+	}
+</script>
+</body>
