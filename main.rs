@@ -39,7 +39,7 @@ async fn man_hours(req: Request<Body>) -> Result<Response<Body>, hyper::Error> {
             // Clone the repo
             let git_log = Command::new("sh")
                     .arg("-c")
-                    .arg(["git clone", name, "--no-checkout", &repo_dir, "&& cd", &repo_dir, "&& git log"].join(" "))
+                    .arg(["git clone --bare", name, &repo_dir, "&& cd", &repo_dir, "&& git log"].join(" "))
                     .output()
                     .expect("Failed to clone repo");
 
