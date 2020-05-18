@@ -90,9 +90,10 @@ async fn man_hours(req: Request<Body>) -> Result<Response<Body>, hyper::Error> {
 
         // Return 404 otherwise
         _ => {
-            let mut not_found = Response::default();
-            *not_found.status_mut() = StatusCode::NOT_FOUND;
-            Ok(not_found)
+            let not_found = Response::builder()
+                .status(StatusCode::NOT_FOUND)
+                .body(Body::from("404 not found"));
+            Ok(not_found.unwrap())
         }
     }
 }
