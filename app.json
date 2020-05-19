@@ -1,0 +1,6 @@
+{
+  "name": "Man Hours Badge",
+  "description": "A microservice for adding a badge to your README that estimates man hours from commit history",
+  "repository": "https://github.com/jessemillar/man-hours-badge",
+  "stack": "container"
+}
