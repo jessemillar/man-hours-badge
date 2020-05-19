@@ -1,10 +1,13 @@
 FROM rust:1.40 as builder
 WORKDIR /usr/src/man-hours
 COPY . .
-RUN cargo install --path .
+RUN rustup target add x86_64-unknown-linux-musl
+RUN cargo install --target x86_64-unknown-linux-musl --path .
 
-FROM archlinux/base:latest
-# Install dependencies
-RUN pacman -Syy && yes | pacman -S git
-COPY --from=builder /usr/local/cargo/bin/man-hours /man-hours
-CMD "/man-hours"
+FROM alpine
+RUN apk --update add git && \
+	rm -rf /var/lib/apt/lists* && \
+	rm /var/cache/apk/*
+WORKDIR /man-hours-badge
+COPY --from=builder /usr/local/cargo/bin/man-hours /usr/bin/man-hours
+CMD "man-hours"
