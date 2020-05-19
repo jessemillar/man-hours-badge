@@ -37,7 +37,7 @@ You can easily deploy Man Hours to your own Heroku account if you'd like. You'll
 
 ### Docker Hub
 
-A Docker container housing the `man-hours` binary is continually built and accessible on [Docker Hub](https://hub.docker.com/r/jessemillar/man-hours).
+A Docker container housing the `man-hours` binary is continually built and accessible on [Docker Hub](https://hub.docker.com/r/jessemillar/man-hours-badge).
 
 ## FAQ
 
