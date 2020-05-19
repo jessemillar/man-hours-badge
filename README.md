@@ -31,13 +31,17 @@ The algorithm only looks at the `master` branch and assumes a healthy, regular c
 
 ### Heroku
 
-You can easily deploy Man Hours to your own Heroku account if you'd like. You'll need to add a "Heroku Redis" add-on to your application post-deploy.
+You can easily deploy Man Hours to your own [Heroku](https://www.heroku.com/) account if you'd like. You'll need to add a "Heroku Redis" add-on to your application post-deploy.
 
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
 
 ### Docker Hub
 
-A Docker container housing the `man-hours` binary is continually built and accessible on [Docker Hub](https://hub.docker.com/r/jessemillar/man-hours-badge).
+A Docker container housing the `man-hours` binary is continually built and accessible on [Docker Hub](https://hub.docker.com/r/jessemillar/man-hours-badge). To run it outside the [Heroku](https://www.heroku.com/) platform, you'll need to set and pass in the `PORT` and `REDIS_URL` environment variables as seen in the command below:
+
+```
+docker run --rm -e PORT="$PORT" -e REDIS_URL="$REDIS_URL" -p $PORT:$PORT jessemillar/man-hours-badge:latest
+```
 
 ## FAQ
 
