@@ -62,7 +62,7 @@ fn calculate(redis_client: redis::Client, repo_name: String) {
     println!("Finished calculation of {}", repo_name);
 
     // Make value_to_cache contain the hour count and the current time for calculating when the data is stale
-    let ttl = since_the_epoch + Duration::from_secs(60*60*24);
+    let ttl = since_the_epoch + Duration::from_secs(60*60*4);
     let value_to_cache = [total_man_hours.num_hours().to_string(), ttl.as_secs().to_string()].join(" ");
     println!("Attempting to cache: {} {}", repo_name, value_to_cache);
     let mut redis_connection = redis_client.get_connection().expect("Error creating Redis connection");

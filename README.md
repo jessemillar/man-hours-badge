@@ -56,7 +56,7 @@ That means one of two things:
 
 Larger repositories take a while to `git clone` even with the `--bare` argument. If you see "calculating" in place of a number on your badge, that means the backend service wasn't able to clone and parse your repo within 5 seconds. Don't worry, it's likely done calculating your man hour total. The [shields.io](https://shields.io/endpoint) CDN has a mandatory cache time of 300 seconds so you'll have to wait that long and then refresh to see your correct total displayed on your badge.
 
-Man Hours uses a Redis cache to prevent unnecessarily recalculating hour counts each time someone HTTP requests your badge. The cached hour totals never expire and automatically recompute (triggered via normal badge HTTP request) after 24 hours. If the cache goes down (for planned/unplanned maintenance), totals will have to be recalculated (which will happen upon the next badge HTTP request) and will show "calculating" during that process.
+Man Hours uses a Redis cache to prevent unnecessarily recalculating hour counts each time someone HTTP requests your badge. The cached hour totals never expire and automatically recompute (triggered via normal badge HTTP request) after 4 hours. If the cache goes down (for planned/unplanned maintenance), totals will have to be recalculated (which will happen upon the next badge HTTP request) and will show "calculating" during that process.
 
 ### Can I use this on a private repo?
 
