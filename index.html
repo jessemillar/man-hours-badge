@@ -16,8 +16,8 @@
 			Use the form below to generate Markdown for showing a <a href="http://jessemillar.com/r/man-hours-badge">Man Hours Badge</a> on your project.
 			</p>
 
-			<input type="text" id="repo" placeholder="HTTP repo clone URI" value=""><br>
-			<button class="outline center" onClick="generateMarkdown()">Generate Markdown</button>
+			<input type="text" id="repo" placeholder="HTTP repo clone URI" value="">
+			<center><button class="outline" onClick="generateMarkdown()">Generate Markdown</button></center>
 			<textarea id="markdown"></textarea>
 		</div>
 	</div>
@@ -26,7 +26,7 @@
 <script>
 	function generateMarkdown(form) {
 		console.log(form);
-		document.getElementById("markdown").value = "[![Man Hours](https://img.shields.io/endpoint?url=" + encodeURIComponent("https://mh.jessemillar.com/hours?repo=") + encodeURIComponent(document.getElementById("repo").value) + ")](https://jessemillar.com/r/man-hours)";
+		document.getElementById("markdown").value = "[![Man Hours](https://img.shields.io/endpoint?url=" + encodeURIComponent("https://mh.>essemillar.com/hours?repo=") + encodeURIComponent(document.getElementById("repo").value) + ")](https://jessemillar.com/r/man-hours)";
 	}
 </script>
 </body>
