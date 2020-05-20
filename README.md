@@ -61,3 +61,7 @@ Man Hours uses a Redis cache to prevent unnecessarily recalculating hour counts 
 ### Can I use this on a private repo?
 
 Currently, no. Since the Man Hours Badge service clones the repo (at least the history) on the backend, you'd have to grant the service read permissions for your whole private repo via a token. This seems like poor security/privacy practice so I've opted to leave out that functionality for now. If there's significant demand later on, I'll consider alternative methods.
+
+### Why does my badge not display at all?
+
+This happens occasionally when the Heroku dyno running the service goes to sleep. If the HTTP request for the badge image times out before the dyno can wake up and serve the proper response, the badge will fail to display. Wait a few seconds and refresh the page. As more people use the Man Hours Badge service, the dyno will begin to no longer sleep which means the issue will disappear.
