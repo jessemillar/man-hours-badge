@@ -1,18 +1,22 @@
 <!DOCTYPE HTML>
 
 <meta charset="UTF-8">
+<link rel="stylesheet" href="https://unpkg.com/wingcss"/>
 
 <title>Generate a Man Hours Badge</title>
 
 <body>
 
-<form action="javascript:void(-1)" method="GET">
-	Enter the repo clone URI in the box: <br>
-	<input type="text" id="repo" value=""><br>
-	<input type="button" name="button" value="Generate Markdown" onClick="generateMarkdown()">
-</form>
+<div class="row">
+	<div class="col">
+		<form action="javascript:void(-1)" method="GET">
+			<input type="text" id="repo" placeholder="HTTP repo clone URI" value=""><br>
+			<input type="button" value="Generate Markdown" onClick="generateMarkdown()">
+		</form>
 
-<textarea id="markdown" rows="4" cols="50"></textarea>
+		<textarea id="markdown"></textarea>
+	</div>
+</div>
 
 <script>
 	function generateMarkdown(form) {
