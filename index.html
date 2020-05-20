@@ -8,16 +8,12 @@
 <body>
 
 <div class="container center">
-	<div class="row">
-		<div class="col">
-			<form action="javascript:void(-1)" method="GET">
-				<input type="text" id="repo" placeholder="HTTP repo clone URI" value=""><br>
-				<button class="outline" onClick="generateMarkdown()">Generate Markdown</button>
-			</form>
+	<form action="javascript:void(-1)" method="GET">
+		<input type="text" id="repo" placeholder="HTTP repo clone URI" value=""><br>
+		<button class="outline center" onClick="generateMarkdown()">Generate Markdown</button>
+	</form>
 
-			<textarea id="markdown"></textarea>
-		</div>
-	</div>
+	<textarea id="markdown"></textarea>
 </div>
 
 <script>
