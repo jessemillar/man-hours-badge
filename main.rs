@@ -16,8 +16,8 @@ use url::Url;
 extern crate redis;
 
 static DEFAULT_SHIELDS_IO_CACHE_TIME: &str = "300";
-static SHIELDS_IO_CACHE_TIME: &str = "14400";
-static CALCULATING_STATUS: &str = "calculating";
+static SHIELDS_IO_CACHE_TIME: &str = "28800"; // Trying 8 hours to counteract the mandatory 6 hour dyno sleep
+static CALCULATING_STATUS_TEXT: &str = "calculating";
 static REDIS_TTL: u64 = 60*60*4;
 
 type GenericError = Box<dyn std::error::Error + Send + Sync>;
@@ -34,7 +34,7 @@ fn send_json_error() -> Result<Response<Body>, hyper::Error> {
 }
 
 fn send_json_calculating() -> Result<Response<Body>, hyper::Error> {
-    return send_json_count(CALCULATING_STATUS.to_string(), Some(DEFAULT_SHIELDS_IO_CACHE_TIME.to_string()));
+    return send_json_count(CALCULATING_STATUS_TEXT.to_string(), Some(DEFAULT_SHIELDS_IO_CACHE_TIME.to_string()));
 }
 
 fn send_json_count(man_hours: String, badge_cache_time: Option<String>) -> Result<Response<Body>, hyper::Error> {
@@ -120,13 +120,13 @@ async fn man_hours(req: Request<Body>, redis_client: redis::Client) -> Result<Re
 
             let mut redis_connection = redis_client.get_connection().expect("Error creating Redis connection");
             let redis_response: Option<String> = redis_connection.get(repo_name.unwrap().to_string()).expect("Error reading from Redis");
-            let cached_value = redis_response.unwrap_or_else(|| CALCULATING_STATUS.to_string());
+            let cached_value = redis_response.unwrap_or_else(|| CALCULATING_STATUS_TEXT.to_string());
 
-            let mut cached_man_hours = CALCULATING_STATUS;
+            let mut cached_man_hours = CALCULATING_STATUS_TEXT;
             let mut cached_man_hours_timestamp = 0;
             let mut time_since_epoch = 0;
 
-            if cached_value != CALCULATING_STATUS {
+            if cached_value != CALCULATING_STATUS_TEXT {
                 let mut split_cached_value = cached_value.split_whitespace();
                 cached_man_hours = split_cached_value.next().unwrap();
                 cached_man_hours_timestamp = split_cached_value.next().unwrap().parse::<u64>().unwrap();
@@ -134,7 +134,7 @@ async fn man_hours(req: Request<Body>, redis_client: redis::Client) -> Result<Re
                 time_since_epoch = since_the_epoch.as_secs();
             }
 
-            if cached_man_hours == CALCULATING_STATUS || cached_man_hours_timestamp < time_since_epoch {
+            if cached_man_hours == CALCULATING_STATUS_TEXT || cached_man_hours_timestamp < time_since_epoch {
                 // Unwrap the value so the borrower doesn't complain
                 let repo_name_string = repo_name.unwrap().to_string();
 
@@ -143,7 +143,7 @@ async fn man_hours(req: Request<Body>, redis_client: redis::Client) -> Result<Re
                 });
             }
 
-            if cached_man_hours == CALCULATING_STATUS {
+            if cached_man_hours == CALCULATING_STATUS_TEXT {
                 return send_json_calculating();
             } else {
                 return send_json_count(cached_man_hours.to_string(), None);
