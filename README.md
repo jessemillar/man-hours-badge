@@ -1,3 +1,5 @@
+> Notice: The code in this repo is still functional, but the service that was previously deployed to Heroku is no longer running [because Heroku did away with their free service tier](https://blog.heroku.com/next-chapter). If you want a badge on your repo counting the hours you've put in but don't want to run your own instance of Man Hours Badge, [WakaTime](https://wakatime.com/share), at a glance, looks like a decent alternative.
+
 # Man Hours Badge
 
 [![Man Hours](https://img.shields.io/endpoint?url=https%3A%2F%2Fmh.jessemillar.com%2Fhours%3Frepo%3Dhttps%3A%2F%2Fgithub.com%2Fjessemillar%2Fman-hours-badge.git)](https://jessemillar.com/r/man-hours)
